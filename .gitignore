@@ -1,2 +1,3 @@
 *.yomo
 .DS_Store
+.env

@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"strings"
+
+	"github.com/yomorun/yomo/core/frame"
 )
 
 // Message is the structure that we received from YoMo Zipper.
@@ -25,7 +27,7 @@ func DataTags() []byte {
 
 // Handler is the function that will be called when we receive a message.
 // No matter payload is over `Datagram` or `Stream`, Handler will be called when we receive a message.
-func Handler(request []byte) (byte, []byte) {
+func Handler(tag frame.Tag, request []byte) (byte, []byte) {
 	var err error
 	defer func() {
 		if err != nil {
