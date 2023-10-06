@@ -1,3 +1,4 @@
 *.yomo
 .DS_Store
 .env
+*.wasm

@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/yomorun/yomo/core/frame"
+	"github.com/yomorun/yomo/serverless"
 )
 
 // Message is the structure that we received from YoMo Zipper.
@@ -21,13 +21,13 @@ type MessageMeta struct {
 }
 
 // DataTags specify the tags that we observed from zipper.
-func DataTags() []byte {
-	return []byte{0x30}
+func DataTags() []uint32 {
+	return []uint32{0x30}
 }
 
 // Handler is the function that will be called when we receive a message.
 // No matter payload is over `Datagram` or `Stream`, Handler will be called when we receive a message.
-func Handler(tag frame.Tag, request []byte) (byte, []byte) {
+func Handler(ctx serverless.Context) {
 	var err error
 	defer func() {
 		if err != nil {
@@ -36,8 +36,8 @@ func Handler(tag frame.Tag, request []byte) (byte, []byte) {
 	}()
 
 	var message Message
-	if err := json.Unmarshal(request, &message); err != nil {
-		return 0, nil
+	if err := json.Unmarshal(ctx.Data(), &message); err != nil {
+		return
 	}
 
 	// Convert to uppercase
@@ -48,8 +48,8 @@ func Handler(tag frame.Tag, request []byte) (byte, []byte) {
 	response, err := json.Marshal(message)
 	if err != nil {
 		log.Println(err)
-		return 0, nil
+		return
 	}
 
-	return 0x31, response
+	ctx.Write(0x31, response)
 }
